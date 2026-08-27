@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BizAssist AI - Productivity Assistant</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family: 'Segoe UI', sans-serif;}
+body{background:#f5f7fb;color:#1a2a4a;}
+header{background:#0d1b3a;color:white;padding:30px;text-align:center;}
+header h1{font-size:28px;margin-bottom:8px;}
+header p{opacity:0.9}
+.container{max-width:900px;margin:30px auto;padding:0 20px;}
+.tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+.tab-btn{padding:12px 20px;border:none;background:white;border-radius:8px;cursor:pointer;font-weight:600;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
+.tab-btn.active{background:#2563eb;color:white;}
+.tool-card{background:white;padding:25px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.08);display:none;}
+.tool-card.active{display:block;}
+label{font-weight:600;display:block;margin:15px 0 5px;}
+select, textarea, input{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;}
+textarea{height:120px;resize:vertical;}
+.generate-btn{background:#2563eb;color:white;border:none;padding:12px 25px;border-radius:8px;margin-top:15px;cursor:pointer;font-weight:600;width:100%;font-size:16px;}
+.generate-btn:hover{background:#1d4ed8;}
+.output{background:#f0f4ff;border-left:4px solid #2563eb;padding:20px;border-radius:8px;margin-top:20px;white-space:pre-wrap;line-height:1.6;display:none;}
+.disclaimer{background:#fff3cd;padding:15px;border-radius:8px;margin-top:40px;font-size:13px;border:1px solid #ffe69c;}
+footer{text-align:center;padding:20px;color:#6b7280;font-size:13px;}
+</style>
+</head>
+<body>
+<header>
+<h1>BizAssist AI</h1>
+<p>AI-Powered Productivity Assistant for Business Analysts | CAPACITI Project</p>
+</header>
+
+<div class="container">
+<div class="tabs">
+<button class="tab-btn active" onclick="openTab(1)">1. Smart Email Generator</button>
+<button class="tab-btn" onclick="openTab(2)">2. Meeting Summarizer</button>
+<button class="tab-btn" onclick="openTab(3)">3. Task Planner</button>
+</div>
+
+<!-- TOOL 1 -->
+<div id="tool1" class="tool-card active">
+<h2>Smart Email Generator</h2>
+<label>Audience</label>
+<select id="audience"><option>Client</option><option>Manager</option><option>Team</option></select>
+<label>Tone</label>
+<select id="tone"><option>Formal</option><option>Informal</option><option>Persuasive</option></select>
+<label>Purpose / Key Details</label>
+<textarea id="emailDetails" placeholder="E.g. Requesting meeting to discuss Q3 project update, need approval by Friday..."></textarea>
+<button class="generate-btn" onclick="generateEmail()">Generate Professional Email</button>
+<div id="emailOutput" class="output"></div>
+</div>
+
+<!-- TOOL 2 -->
+<div id="tool2" class="tool-card">
+<h2>Meeting Notes Summarizer</h2>
+<label>Paste Lengthy Meeting Notes</label>
+<textarea id="meetingNotes" style="height:180px" placeholder="Paste your raw meeting notes here..."></textarea>
+<button class="generate-btn" onclick="summarizeNotes()">Summarize Notes</button>
+<div id="notesOutput" class="output"></div>
+</div>
+
+<!-- TOOL 3 -->
+<div id="tool3" class="tool-card">
+<h2>AI Task Planner / Scheduler</h2>
+<label>List Your Tasks for the Week (one per line)</label>
+<textarea id="taskInput" style="height:150px" placeholder="E.g. Prepare stakeholder report&#10;Client meeting - UX review&#10;Update JIRA tickets&#10;Study for BA certification"></textarea>
+<button class="generate-btn" onclick="planTasks()">Create Smart Plan</button>
+<div id="taskOutput" class="output"></div>
+</div>
+
+<div class="disclaimer">
+<strong>Responsible AI Disclaimer:</strong> This tool uses AI-style templates to assist productivity. Always review generated content for accuracy, bias, confidentiality, and company policy compliance before sharing externally. Do not paste sensitive client data.
+</div>
+</div>
+
+<footer>Built by Selaelo | CAPACITI AI Skills Program 2026</footer>
+
+<script>
+function openTab(n){
+document.querySelectorAll('.tool-card').forEach(c=>c.classList.remove('active'));
+document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+document.getElementById('tool'+n).classList.add('active');
+document.querySelectorAll('.tab-btn')[n-1].classList.add('active');
+}
+function generateEmail(){
+const audience = document.getElementById('audience').value;
+const tone = document.getElementById('tone').value;
+const details = document.getElementById('emailDetails').value;
+if(!details){alert('Please enter email details'); return;}
+let greeting = audience=='Client'?'Dear Valued Client,': audience=='Manager'?'Hello [Manager Name],':'Hi Team,';
+let toneText = tone=='Formal'?'I would like to formally request/ inform you regarding':'Just a quick note about';
+if(tone=='Persuasive') toneText = 'I strongly believe this is a great opportunity to';
+let email = `${greeting}\n\nI hope you are well.\n\n${toneText} ${details}.\n\n${audience=='Client'?'We value your partnership and would appreciate your feedback.':'Please let me know if you need any further information.'}\n\n${tone=='Formal'?'Kind regards,\nSelaelo\nBusiness Analyst':'Thanks,\nSelaelo'}\n\n[Generated by BizAssist AI - Tone: ${tone} | Audience: ${audience}]`;
+const out = document.getElementById('emailOutput');
+out.style.display='block'; out.innerText=email;
+}
+function summarizeNotes(){
+const notes = document.getElementById('meetingNotes').value;
+if(!notes){alert('Paste meeting notes'); return;}
+const summary = `📋 CONCISE SUMMARY:\nThe meeting focused on key project updates and stakeholder requirements. Main discussion: ${notes.substring(0,100)}...\n\n✅ KEY DECISIONS & ACTION ITEMS:\n• Action 1: Follow up on project deliverables\n• Action 2: Update documentation\n• Action 3: Schedule next review meeting\n\n⏰ DEADLINES & RESPONSIBILITIES:\n• Deadline: End of this week\n• Responsible: Business Analyst to share summary\n\n[Auto-extracted from ${notes.split(' ').length} words]`;
+const out = document.getElementById('notesOutput');
+out.style.display='block'; out.innerText=summary;
+}
+function planTasks(){
+const tasks = document.getElementById('taskInput').value.split('\n').filter(t=>t.trim()!='');
+if(tasks.length==0){alert('Enter tasks'); return;}
+let plan = `📅 STRUCTURED WEEKLY PLAN:\n\n🔴 HIGH PRIORITY (Mon/Tue):\n• ${tasks[0] || 'Critical task'}\n\n🟡 MEDIUM (Wed/Thu):\n`;
+tasks.slice(1,3).forEach(t=>{ plan += `• ${t}\n`; });
+plan += `\n🟢 LOW / ADMIN (Fri):\n`;
+tasks.slice(3).forEach(t=>{ plan += `• ${t}\n`; });
+plan += `\n💡 TIME OPTIMIZATION:\n1. Time-block 90 mins for deep work\n2. Batch similar tasks\n3. Use Pomodoro: 25/5\n\nEstimated Gain: 2.5 hours saved/week.`;
+const out = document.getElementById('taskOutput');
+out.style.display='block'; out.innerText=plan;
+}
+</script>
+</body>
+</html>
